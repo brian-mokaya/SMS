@@ -35,18 +35,32 @@ public class StudentService {
     public List<Student> getAllStudents() {
         if (students.isEmpty()) {
             System.out.println("No students found.");
-            return null;
+            return Collections.emptyList(); // Instead of returning null
         }
         students.forEach(System.out::println);
         return students;
     }
 
+
     public Student searchStudent(int rollNumber) {
+        System.out.println("Searching for student with roll number " + rollNumber);
+
+        if (students.isEmpty()) {
+            System.out.println("No students available.");
+            return null;
+        }
+
+        students.forEach(System.out::println); // Print all students before searching
+
         return students.stream()
                 .filter(student -> student.getRollNumber() == rollNumber)
                 .findFirst()
-                .orElse(null);
+                .orElseGet(() -> {
+                    System.out.println("Student not found.");
+                    return null;
+                });
     }
+
 
     private void loadStudentsFromFile() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
